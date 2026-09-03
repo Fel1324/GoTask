@@ -1,1 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+@utility scrollbar-hidden {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+html {
+  font-family: "Archivo", sans-serif;
+}
+
+img {
+  vertical-align: top;
+}
