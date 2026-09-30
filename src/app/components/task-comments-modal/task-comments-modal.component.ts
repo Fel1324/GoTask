@@ -1,13 +1,43 @@
-import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { Component, inject } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { IComment } from '../../interfaces/comment.interface';
+import { generateIdWithTimestamp } from '../../utils/generate-id-with-timestamp';
+import { ITask } from '../../interfaces/task.interface';
 
 @Component({
   selector: 'app-task-comments-modal',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './task-comments-modal.component.html'
 })
 export class TaskCommentsModalComponent {
-  readonly _task = inject(DIALOG_DATA);
+  taskCommentsChanged = false;
+  commentControl = new FormControl('', [Validators.required])
 
-  
+  @ViewChild('commentInput') commentInputRef!: ElementRef<HTMLInputElement>;
+
+  readonly _task: ITask = inject(DIALOG_DATA);
+  readonly _dialogRef: DialogRef<boolean> = inject(DialogRef);
+
+  onAddComment(){
+    const newComment: IComment = {
+      id: generateIdWithTimestamp(),
+      description: this.commentControl.value ?? '',
+    };
+
+    this._task.comments.unshift(newComment);
+    this.commentControl.reset();
+    this.taskCommentsChanged = true;
+
+    this.commentInputRef.nativeElement.focus();
+  }
+
+  onRemoveModal(commentId: string){
+    this._task.comments = this._task.comments.filter(comment => comment.id !== commentId);
+    this.taskCommentsChanged = true;
+  }
+
+  onCloseModal(){
+    this._dialogRef.close(this.taskCommentsChanged);
+  }
 }

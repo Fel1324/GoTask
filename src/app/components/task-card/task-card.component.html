@@ -1,16 +1,20 @@
 <div class="p-3 bg-[#FAFAFA] rounded-xl cursor-grab flex flex-col gap-3">
   <div class="flex gap-1">
-    <p class="font-bold">{{ task.name }}</p>
-    <img class="self-start cursor-pointer ml-auto" src="icons/icon-delete.svg" alt="">
+    <p class="font-bold" [title]="task.name">
+      {{ task.name.length < 13 ? task.name : (task.name | slice:0:13) + '...' }}
+    </p>
+    <img class="self-start cursor-pointer ml-auto" src="icons/icon-delete.svg" alt="" (click)="deleteTask()">
   </div>
-  <p class="font-light text-sm">{{ task.description }}</p>
+  <p class="font-light text-sm" [title]="task.description">
+    {{ task.description.length < 20 ? task.description : (task.description | slice:0:20) + '...' }}
+  </p>
   <div class="flex items-center gap-1">
     <img src="icons/icon-comments.svg" alt="">
     <button
       class="font-semibold text-xs text-[#2A89EF] underline underline-offset-2 cursor-pointer"
       (click)="openTaskCommentsModal()"
     >
-      {{ task.comments.length }} Comentários
+      {{ task.comments.length }} {{ task.comments.length === 1 ? 'Comentário' : 'Comentários' }}
     </button>
     <button (click)="openEditTaskModal()" class="font-semibold text-xs text-[#2A89EF] underline underline-offset-2 cursor-pointer ml-auto">
       Editar
