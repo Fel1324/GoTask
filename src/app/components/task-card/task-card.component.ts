@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
+import { ModalControllerService } from '../../services/modal-controller.service';
+import { ITask } from '../../interfaces/task.interface';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-task-card',
@@ -6,5 +9,33 @@ import { Component } from '@angular/core';
   templateUrl: './task-card.component.html'
 })
 export class TaskCardComponent {
+  @Input({ required: true }) task!: ITask;
+  private readonly _taskService = inject(TaskService)
+  private readonly _modalControllerService = inject(ModalControllerService);
 
+  openEditTaskModal() {
+    const dialogRef = this._modalControllerService.openEditTaskModal({
+      name: this.task.name,
+      description: this.task.description
+    });
+
+    dialogRef.closed.subscribe((taskForm) => {
+      if(taskForm) {
+        this._taskService.updateTaskNameAndDesc(
+          this.task.id,
+          this.task.status,
+          taskForm.name,
+          taskForm.description,
+        );
+      }
+    })
+  }
+
+  openTaskCommentsModal() {
+    this.task.comments = [
+      {id: '123', description: 'meu comment men 1'},
+      {id: '321', description: 'meu comment men 2'}
+    ]
+    this._modalControllerService.openTaskCommentsModal(this.task);
+  }
 }

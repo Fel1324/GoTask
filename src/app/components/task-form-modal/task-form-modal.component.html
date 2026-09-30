@@ -1,8 +1,10 @@
-<form class="rounded-xl overflow-hidden bg-white">
+<form class="rounded-xl overflow-hidden bg-white" [formGroup]="taskForm" (ngSubmit)="onFormSubmit()">
   <div class="flex gap-1 items-center p-4">
     <img src="icons/icon-new-task.svg" alt="">
-    <strong class="font-semibold text-lg">Criar/Editar tarefa</strong>
-    <img class="ml-auto cursor-pointer" src="icons/icon-close.svg" alt="">
+    <strong class="font-semibold text-lg">
+      {{_data.mode === "create" ? "Criar" : "Editar"}} Tarefa
+    </strong>
+    <img (click)="closeModal()" class="ml-auto cursor-pointer" src="icons/icon-close.svg" alt="">
   </div>
   <div class="p-4 border-y border-[#D1D5DB] flex flex-col gap-4">
     <div>
@@ -11,10 +13,13 @@
         class="w-full border border-[#D1D5DB] p-3 rounded-lg text-sm font-light text-[#89919F]"
         type="text"
         placeholder="Descreva o que deverá ser feito"
+        formControlName="name"
       >
-      <p class="font-semibold text-sm text-red-500 mt-1">
-        O campo é obrigatório e precisa ter no minímo 10 caracteres.
-      </p>
+      @if(taskForm.get('name')?.touched && taskForm.get('name')?.invalid) {
+        <p class="font-semibold text-sm text-red-500 mt-1">
+          O campo é obrigatório e precisa ter no minímo 10 caracteres.
+        </p>
+      }
     </div>
     <div>
       <label class="block font-semibold text-sm mb-2">Descrição</label>
@@ -22,24 +27,33 @@
         class="w-full border border-[#D1D5DB] p-3 rounded-lg text-sm font-light text-[#89919F]"
         type="text"
         placeholder="Adicione uma descrição"
+        formControlName="description"
       >
-      <p class="font-semibold text-sm text-red-500 mt-1">
-        O campo é obrigatório e precisa ter no minímo 10 caracteres.
-      </p>
+      @if(taskForm.get('description')?.touched && taskForm.get('description')?.invalid) {
+        <p class="font-semibold text-sm text-red-500 mt-1">
+          O campo é obrigatório e precisa ter no minímo 10 caracteres.
+        </p>
+      }
     </div>
     <div class="p-4 flex justify-end gap-2">
       <button
         class="py-3 px-4 bg-[#FAFAFA] rounded-xl text-sm font-semibold cursor-pointer active:translate-y-1 transition-transform duration-75"
         type="button"
+        (click)="closeModal()"
       >
         Cancelar
       </button>
       <button
-        class="py-3 px-4 bg-[#2A89EF] text-white rounded-xl text-sm font-semibold cursor-pointer active:translate-y-1 transition-transform duration-75 shadow-md shadow-blue-500/50"
+        class="{{ `py-3 px-4 rounded-xl text-white text-sm font-semibold cursor-pointer ${
+          taskForm.invalid
+          ? 'bg-[#D7D8D8]'
+          : 'bg-[#2A89EF] active:translate-y-1 transition-transform duration-75 shadow-md shadow-blue-500/50'
+        }` }}"
         type="submit"
+        [disabled]="taskForm.invalid"
       >
-        Criar uma tarefa
+        {{ _data.mode === 'create' ? 'Criar uma tarefa' : 'Salvar alterações' }}
       </button>
     </div>
-  z</div>
+  </div>
 </form>
