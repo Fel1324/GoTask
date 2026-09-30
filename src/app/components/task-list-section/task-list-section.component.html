@@ -4,10 +4,6 @@
 
 @let noTasksCreated = toDoTasks.length === 0 && doingTasks.length === 0 && doneTasks.length === 0;
 
-TODO: {{ this._taskService.toDoTasks | async | json }} <br>
-DOING: {{ this._taskService.doingTasks | async | json }} <br>
-DONE: {{ this._taskService.doneTasks | async | json }}
-
 <div class="flex overflow-auto scrollbar-hidden">
   <!-- Coluna A Fazer -->
   <div
